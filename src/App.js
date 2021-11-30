@@ -32,12 +32,10 @@ const App = () => {
         <>
             <div>
                 <Navbar totalItems={cart.total_items}/>
-                    <Routes>
+                <Routes>
                     <Route path="/" element={<Products products={products} onAddToCart={handleAddToCart} />} />
-                    <Route path="/cart">
-                    <Cart cart={cart} />
-                    </Route>
-                    </Routes>
+                    <Route path="/cart" element={<Cart cart={cart} />} />
+                </Routes>
            </div>
         </>
         
