@@ -45,7 +45,7 @@ const Checkout = ({ cart }) => {
         </div>
     }
 
-    const Form = () => activeStep == 0 ? <AddressForm checkoutToken={checkoutToken} next={next}/> : <PaymentForm setShippingData={setShippingData}/>
+    const Form = () => activeStep == 0 ? <AddressForm checkoutToken={checkoutToken} next={next}/> : <PaymentForm setShippingData={setShippingData} checkoutToken={checkoutToken}/>
 
     return (
         <>
