@@ -7,9 +7,36 @@ import Review from './Review';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
-const PaymentForm = ({ checkoutToken, backStep }) => {
-    const handleSubmit = () => {
+const PaymentForm = ({ checkoutToken, backStep, nextStep, shippingData, onCaptureCheckout }) => {
+    const handleSubmit = async (event, elements, stripe) => {
+        event.preventDefault();
 
+        if(!stripe || !elements) return;
+
+        const cardElement = elements.getElement(CardElement);
+
+        const { error, paymentMethod } = await stripe.createPaymentMethod({ type: 'card', card: cardElement});
+
+        if(error){
+            console.log(error);
+        } else {
+            const orderData = {
+                line_items: checkoutToken.live.line_items,
+                customer: { firstname: shippingData.firstName, lastname: shippingData.lastName, email: shippingData.email},
+                shipping: { name: 'Primary', street: shippingData.address1, town_city: shippingData.city, postal_zip_code: shippingData.zip, country: shippingData.shippingCountry},
+                fulfillment: { shipping_method: shippingData.shippingOption},
+                payment: {
+                    gateway: 'stripe',
+                    stripe: {
+                        payment_method_id: paymentMethod.id
+                    }
+                }
+            }
+
+            onCaptureCheckout(checkoutToken.id, orderData);
+
+            nextStep();
+        }
     }
     return (
         <>
